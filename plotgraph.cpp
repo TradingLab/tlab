@@ -23,12 +23,13 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     std::string sql;
     int len, i = 0;
     float ft_max, ft_min;
+    int in_cnt;
 
 //    this->logic = logic;
 //    radius = 20;
 
     /* Create SQL statement */
-    sql = "SELECT MAX(last_trade) FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00AM'";
+    sql = "SELECT MAX(last_trade) FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00'";
 
     /* Create a non-transactional object. */
     pqxx::nontransaction N_MAX(C);
@@ -40,8 +41,9 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
         throw std::runtime_error("Max user ID is not float. "
                                  "Maybe the users table is empty?");
     }
+    
     /* Create SQL statement */
-    sql = "SELECT MIN(last_trade) FROM quotes WHERE symbol = 'EURUSD=X'";// and tstamp > '2015-08-17 00:00:00AM'";
+    sql = "SELECT MIN(last_trade) FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00'";
 
     N_MAX.commit();
     /* Create a non-transactional object. */
@@ -51,6 +53,21 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     pqxx::result R_MIN( N_MIN.exec( sql ));
 
     if (!R_MIN[0][0].to<float>(ft_min)) {
+        throw std::runtime_error("Max user ID is not float. "
+                                 "Maybe the users table is empty?");
+    }
+    
+    /* Create SQL statement */
+    sql = "SELECT COUNT(*) FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00'";
+
+    N_MIN.commit();
+    /* Create a non-transactional object. */
+    pqxx::nontransaction N_CNT(C);
+
+    /* Execute SQL query */
+    pqxx::result R_CNT( N_CNT.exec( sql ));
+
+    if (!R_CNT[0][0].to<int>(in_cnt)) {
         throw std::runtime_error("Max user ID is not float. "
                                  "Maybe the users table is empty?");
     }
@@ -74,7 +91,7 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
 // //            cout << "Salary = " << c[4].as<float>() << endl;
 //        i += 1;
 //    }
-    std::cout << ft_max << " " << ft_min << std::endl;
+    std::cout << ft_max << " " << ft_min << " " << in_cnt << std::endl;
     std::cout << "Operation done successfully" << std::endl;
 
 
