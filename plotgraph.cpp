@@ -21,12 +21,9 @@
 
 PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent): QWidget(parent) {
     std::string sql;
-    int len, i = 0;
-    float ft_max, ft_min;
+    int i = 0;
+    float ft_max, ft_min, last;
     int in_cnt;
-
-//    this->logic = logic;
-//    radius = 20;
 
     /* Create SQL statement */
     sql = "SELECT MAX(last_trade) FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00'";
@@ -80,17 +77,26 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     // BID            FLOAT4,"
     // VOLUME         INT4,"
 
-    i = 0;
-//    for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
-//        cout << i << endl;
-//         std::cout << "Symbol     = " << c[0].as<string>() << std::endl;
-//         std::cout << "TStamp     = " << c[1].as<string>() << std::endl;
-//         std::cout << "TLast      = " << c[2].as<string>() << std::endl;
-//         std::cout << "Last trade = " << c[3].as<float>() << std::endl;
-//         std::cout << "-------------------------" << std::endl;
-// //            cout << "Salary = " << c[4].as<float>() << endl;
-//        i += 1;
-//    }
+    /* Create SQL statement */
+    sql = "SELECT last_trade FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00'";
+
+    N_CNT.commit();
+    /* Create a non-transactional object. */
+    pqxx::nontransaction N_LT(C);
+
+    /* Execute SQL query */
+    pqxx::result R_LT( N_LT.exec( sql ));
+
+//     i = 0;
+//     for (pqxx::result::const_iterator c = R_LT.begin(); c != R_LT.end(); ++c) {
+// //        cout << i << endl;
+// //         std::cout << "Symbol     = " << c[0].as<string>() << std::endl;
+// //         std::cout << "TStamp     = " << c[1].as<string>() << std::endl;
+// //         std::cout << "TLast      = " << c[2].as<string>() << std::endl;
+// //         std::cout << "-------------------------" << std::endl;
+// // //            cout << "Salary = " << c[4].as<float>() << endl;
+//         i += 1;
+//     }
     std::cout << ft_max << " " << ft_min << " " << in_cnt << std::endl;
     std::cout << "Operation done successfully" << std::endl;
 
@@ -103,43 +109,42 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     xyPlot->setMinimumSize( 600, 600 );					//set minimum size in pixel
     xyData = new KPlotObject( Qt::blue, KPlotObject::Points, 10, KPlotObject::Star); //Bars are drawn in red with thickness 2
     xyData2 = new KPlotObject( Qt::red, KPlotObject::Lines, 1);//, KPlotObject::Square); //Bars are drawn in red with thickness 2
-    xyPlot->setLimits(0, 200, 0, 400);					//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
-//  xyPlot->setLimits(0, 400, ft_min, ft_max);				//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
+//      xyPlot->setLimits(0, 400, 0, 400);					//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
+    xyPlot->setLimits(0, in_cnt, ft_min, ft_max);				//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
     xyPlot->addPlotObject(xyData);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
     xyPlot->addPlotObject(xyData2);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
     xyPlot->setBackgroundColor( QColor(240, 240, 240) );		//background: light shade of gray
     xyPlot->setForegroundColor( Qt::black );				//foreground: black
     xyPlot->axis( KPlotWidget::BottomAxis )->setLabel("Time [s]");	//set x-axis labeling
-    xyPlot->axis( KPlotWidget::LeftAxis )->setLabel("Position [m]");    //set y-axis labeling
-    xyPlot->setShowGrid(false);
+    xyPlot->axis( KPlotWidget::LeftAxis )->setLabel("Value [EUR/USD]");    //set y-axis labeling
+    xyPlot->setShowGrid(true);
     xyData->setShowLines( true );
-//    xyData->setShowBars( true );
-    xyData->setLinePen( QPen( Qt::red, 1, Qt::SolidLine ) );
-    for(int x=1; x<200; x+=10) {
-//        xyData->addPoint(x,1);
-        xyData->addPoint(x,100);
-        xyPlot->update();
-//        xyData->setLinePen( QPen( Qt::red, 3.0, Qt::NoPen ) );
-    }
-//    update();
-    xyData2->setLinePen( QPen( Qt::blue, 2, Qt::SolidLine ) );
-    for(int x=1; x<200; x+=10) {
-        xyData2->addPoint(x,200);
-        xyData2->addPoint(x,300);
-        xyPlot->update();
-//        xyData->setLinePen( QPen( Qt::red, 3.0, Qt::NoPen ) );
-    }
-//    update();
-//     QPainter painter(this);
-//     painter.setRenderHint(QPainter::Antialiasing, true);
-//     //draw ball
-//     painter.setPen(QPen(Qt::blue, 4));
-//     painter.drawEllipse(100, 100, 40, -40);
-//     //draw floor
-//     painter.fillRect( 10, 595, 180, -20 , QColor(40, 40, 40) );
-//
-//     xyData->draw(&painter, xyPlot);
-//     xyPlot->update();
-//    update();
+// //    xyData->setShowBars( true );
+//     xyData->setLinePen( QPen( Qt::red, 1, Qt::SolidLine ) );
+//     for(int x=1; x<200; x+=10) {
+// //        xyData->addPoint(x,1);
+//         xyData->addPoint(x,100);
+//         xyPlot->update();
+// //        xyData->setLinePen( QPen( Qt::red, 3.0, Qt::NoPen ) );
+//     }
+// //    update();
+//     xyData2->setLinePen( QPen( Qt::blue, 2, Qt::SolidLine ) );
+//     for(int x=1; x<200; x+=10) {
+//         xyData2->addPoint(x,200);
+//         xyData2->addPoint(x,300);
+//         xyPlot->update();
+// //        xyData->setLinePen( QPen( Qt::red, 3.0, Qt::NoPen ) );
+//     }
+// //    update();
 
+    xyData2->setLinePen( QPen( Qt::blue, 2, Qt::SolidLine ) );
+    i = 0;
+    for (pqxx::result::const_iterator c = R_LT.begin(); c != R_LT.end(); ++c) {
+        last = c[0].as<float>();
+        xyData2->addPoint(i,last);
+//        xyData->setLinePen( QPen( Qt::red, 3.0, Qt::NoPen ) );
+	i += 1;
+    }
+    xyPlot->update();
+    
 }

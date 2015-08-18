@@ -67,7 +67,7 @@ int main (int argc, char *argv[])
 {
 
     string db, host, port, usr, pwd, con;
-    int len;//, i = 0;
+    int len;
 
     if (argc ==  2) {
         if (string(argv[1]) == "-h") {
