@@ -8,7 +8,13 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include <KApplication>
+#include <KAboutData>
+#include <KCmdLineArgs>
+
 #include <pqxx/pqxx>
+//Include the header of the new main window.
+#include "plotwindow.h"
 
 using namespace std;
 using namespace pqxx;
@@ -59,6 +65,7 @@ const std::string EnterPassword(int lon) {
 
 int main (int argc, char *argv[])
 {
+
     string db, host, port, usr, pwd, con;
     int len, i = 0;
 
@@ -150,7 +157,7 @@ int main (int argc, char *argv[])
         }
 
         /* Create SQL statement */
-        sql = "SELECT * from quotes where symbol = 'EURUSD=X'";
+        sql = "SELECT * from quotes where symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00AM'";
 
         /* Create a non-transactional object. */
         nontransaction N(C);
@@ -187,4 +194,16 @@ int main (int argc, char *argv[])
         return 1;
     }
 
+    KAboutData aboutData( "tlab", 0,
+                          ki18n("tlab"), "1.0",
+                          ki18n("Technology lab and advanced trading strategies"),
+                          KAboutData::License_GPL,
+                          ki18n("Copyright (c) 2015 Jordi Estrada") );
+    argc = 1;
+    KCmdLineArgs::init( argc, argv, &aboutData );
+
+    KApplication app;
+    PlotWindow* mainWindow = new PlotWindow();
+    mainWindow->show();
+    return app.exec();
 }

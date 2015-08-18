@@ -212,6 +212,36 @@ main.s:
 .PHONY : main.s
 
 # target to build an object file
+plotgraph.o:
+	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/plotgraph.o
+.PHONY : plotgraph.o
+
+# target to preprocess a source file
+plotgraph.i:
+	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/plotgraph.i
+.PHONY : plotgraph.i
+
+# target to generate assembly for a file
+plotgraph.s:
+	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/plotgraph.s
+.PHONY : plotgraph.s
+
+# target to build an object file
+plotwindow.o:
+	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/plotwindow.o
+.PHONY : plotwindow.o
+
+# target to preprocess a source file
+plotwindow.i:
+	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/plotwindow.i
+.PHONY : plotwindow.i
+
+# target to generate assembly for a file
+plotwindow.s:
+	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/plotwindow.s
+.PHONY : plotwindow.s
+
+# target to build an object file
 tlab_automoc.o:
 	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/tlab_automoc.o
 .PHONY : tlab_automoc.o
@@ -247,6 +277,12 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... plotgraph.o"
+	@echo "... plotgraph.i"
+	@echo "... plotgraph.s"
+	@echo "... plotwindow.o"
+	@echo "... plotwindow.i"
+	@echo "... plotwindow.s"
 	@echo "... tlab_automoc.o"
 	@echo "... tlab_automoc.i"
 	@echo "... tlab_automoc.s"

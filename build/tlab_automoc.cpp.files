@@ -1,5 +1,5 @@
 SOURCES:
-/home/jordi/TradingLab/tlab/julian.cpp;/home/jordi/TradingLab/tlab/main.cpp
+/home/jordi/TradingLab/tlab/plotgraph.cpp;/home/jordi/TradingLab/tlab/plotwindow.cpp;/home/jordi/TradingLab/tlab/julian.cpp;/home/jordi/TradingLab/tlab/main.cpp
 MOC_COMPILE_DEFINITIONS:
 _BSD_SOURCE
 MOC_DEFINITIONS:

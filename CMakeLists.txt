@@ -7,7 +7,7 @@ set(TLab_SRCS
   main.cpp
 )
 
-kde4_add_executable(tlab julian.cpp ${TLab_SRCS})
+kde4_add_executable(tlab plotgraph.cpp plotwindow.cpp julian.cpp ${TLab_SRCS})
 
 FIND_LIBRARY(TLab_LIB
              NAMES pqxx

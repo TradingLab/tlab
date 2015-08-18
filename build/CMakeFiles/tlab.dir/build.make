@@ -75,9 +75,55 @@ CMakeFiles/tlab.dir/tlab_automoc.o.provides: CMakeFiles/tlab.dir/tlab_automoc.o.
 
 CMakeFiles/tlab.dir/tlab_automoc.o.provides.build: CMakeFiles/tlab.dir/tlab_automoc.o
 
+CMakeFiles/tlab.dir/plotgraph.o: CMakeFiles/tlab.dir/flags.make
+CMakeFiles/tlab.dir/plotgraph.o: ../plotgraph.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_2)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/tlab.dir/plotgraph.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/tlab.dir/plotgraph.o -c /home/jordi/TradingLab/tlab/plotgraph.cpp
+
+CMakeFiles/tlab.dir/plotgraph.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tlab.dir/plotgraph.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/jordi/TradingLab/tlab/plotgraph.cpp > CMakeFiles/tlab.dir/plotgraph.i
+
+CMakeFiles/tlab.dir/plotgraph.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tlab.dir/plotgraph.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/jordi/TradingLab/tlab/plotgraph.cpp -o CMakeFiles/tlab.dir/plotgraph.s
+
+CMakeFiles/tlab.dir/plotgraph.o.requires:
+.PHONY : CMakeFiles/tlab.dir/plotgraph.o.requires
+
+CMakeFiles/tlab.dir/plotgraph.o.provides: CMakeFiles/tlab.dir/plotgraph.o.requires
+	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/plotgraph.o.provides.build
+.PHONY : CMakeFiles/tlab.dir/plotgraph.o.provides
+
+CMakeFiles/tlab.dir/plotgraph.o.provides.build: CMakeFiles/tlab.dir/plotgraph.o
+
+CMakeFiles/tlab.dir/plotwindow.o: CMakeFiles/tlab.dir/flags.make
+CMakeFiles/tlab.dir/plotwindow.o: ../plotwindow.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/tlab.dir/plotwindow.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/tlab.dir/plotwindow.o -c /home/jordi/TradingLab/tlab/plotwindow.cpp
+
+CMakeFiles/tlab.dir/plotwindow.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tlab.dir/plotwindow.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/jordi/TradingLab/tlab/plotwindow.cpp > CMakeFiles/tlab.dir/plotwindow.i
+
+CMakeFiles/tlab.dir/plotwindow.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tlab.dir/plotwindow.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/jordi/TradingLab/tlab/plotwindow.cpp -o CMakeFiles/tlab.dir/plotwindow.s
+
+CMakeFiles/tlab.dir/plotwindow.o.requires:
+.PHONY : CMakeFiles/tlab.dir/plotwindow.o.requires
+
+CMakeFiles/tlab.dir/plotwindow.o.provides: CMakeFiles/tlab.dir/plotwindow.o.requires
+	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/plotwindow.o.provides.build
+.PHONY : CMakeFiles/tlab.dir/plotwindow.o.provides
+
+CMakeFiles/tlab.dir/plotwindow.o.provides.build: CMakeFiles/tlab.dir/plotwindow.o
+
 CMakeFiles/tlab.dir/julian.o: CMakeFiles/tlab.dir/flags.make
 CMakeFiles/tlab.dir/julian.o: ../julian.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_2)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/tlab.dir/julian.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/tlab.dir/julian.o -c /home/jordi/TradingLab/tlab/julian.cpp
 
@@ -100,7 +146,7 @@ CMakeFiles/tlab.dir/julian.o.provides.build: CMakeFiles/tlab.dir/julian.o
 
 CMakeFiles/tlab.dir/main.o: CMakeFiles/tlab.dir/flags.make
 CMakeFiles/tlab.dir/main.o: ../main.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/tlab.dir/main.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/tlab.dir/main.o -c /home/jordi/TradingLab/tlab/main.cpp
 
@@ -124,6 +170,8 @@ CMakeFiles/tlab.dir/main.o.provides.build: CMakeFiles/tlab.dir/main.o
 # Object files for target tlab
 tlab_OBJECTS = \
 "CMakeFiles/tlab.dir/tlab_automoc.o" \
+"CMakeFiles/tlab.dir/plotgraph.o" \
+"CMakeFiles/tlab.dir/plotwindow.o" \
 "CMakeFiles/tlab.dir/julian.o" \
 "CMakeFiles/tlab.dir/main.o"
 
@@ -131,6 +179,8 @@ tlab_OBJECTS = \
 tlab_EXTERNAL_OBJECTS =
 
 tlab: CMakeFiles/tlab.dir/tlab_automoc.o
+tlab: CMakeFiles/tlab.dir/plotgraph.o
+tlab: CMakeFiles/tlab.dir/plotwindow.o
 tlab: CMakeFiles/tlab.dir/julian.o
 tlab: CMakeFiles/tlab.dir/main.o
 tlab: CMakeFiles/tlab.dir/build.make
@@ -151,6 +201,8 @@ CMakeFiles/tlab.dir/build: tlab
 .PHONY : CMakeFiles/tlab.dir/build
 
 CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/tlab_automoc.o.requires
+CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/plotgraph.o.requires
+CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/plotwindow.o.requires
 CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/julian.o.requires
 CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/main.o.requires
 .PHONY : CMakeFiles/tlab.dir/requires

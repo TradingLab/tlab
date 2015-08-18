@@ -6,6 +6,8 @@ SET(CMAKE_DEPENDS_LANGUAGES
 SET(CMAKE_DEPENDS_CHECK_CXX
   "/home/jordi/TradingLab/tlab/julian.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/julian.o"
   "/home/jordi/TradingLab/tlab/main.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/main.o"
+  "/home/jordi/TradingLab/tlab/plotgraph.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/plotgraph.o"
+  "/home/jordi/TradingLab/tlab/plotwindow.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/plotwindow.o"
   "/home/jordi/TradingLab/tlab/build/tlab_automoc.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/tlab_automoc.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
