@@ -17,10 +17,66 @@
 
 #include "plotgraph.h"
 #include<QPainter>
+#include <string>
 
-PlotGraph::PlotGraph(KPlotWidget* xyPlot, QWidget* parent): QWidget(parent) {
+PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent): QWidget(parent) {
+    std::string sql;
+    int len, i = 0;
+    float ft_max, ft_min;
+
 //    this->logic = logic;
 //    radius = 20;
+
+    /* Create SQL statement */
+    sql = "SELECT MAX(last_trade) FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00AM'";
+
+    /* Create a non-transactional object. */
+    pqxx::nontransaction N_MAX(C);
+
+    /* Execute SQL query */
+    pqxx::result R_MAX( N_MAX.exec( sql ));
+
+    if (!R_MAX[0][0].to<float>(ft_max)) {
+        throw std::runtime_error("Max user ID is not float. "
+                                 "Maybe the users table is empty?");
+    }
+    /* Create SQL statement */
+    sql = "SELECT MIN(last_trade) FROM quotes WHERE symbol = 'EURUSD=X'";// and tstamp > '2015-08-17 00:00:00AM'";
+
+    N_MAX.commit();
+    /* Create a non-transactional object. */
+    pqxx::nontransaction N_MIN(C);
+
+    /* Execute SQL query */
+    pqxx::result R_MIN( N_MIN.exec( sql ));
+
+    if (!R_MIN[0][0].to<float>(ft_min)) {
+        throw std::runtime_error("Max user ID is not float. "
+                                 "Maybe the users table is empty?");
+    }
+    /* List down all the records */
+    // SYMBOL         CHAR(10) NOT NULL,"
+    // TSTAMP         TIMESTAMP NOT NULL,"
+    // TLAST          TIMESTAMP,"
+    // LAST_TRADE     FLOAT4,"
+    // ASK            FLOAT4,"
+    // BID            FLOAT4,"
+    // VOLUME         INT4,"
+
+    i = 0;
+//    for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
+//        cout << i << endl;
+//         std::cout << "Symbol     = " << c[0].as<string>() << std::endl;
+//         std::cout << "TStamp     = " << c[1].as<string>() << std::endl;
+//         std::cout << "TLast      = " << c[2].as<string>() << std::endl;
+//         std::cout << "Last trade = " << c[3].as<float>() << std::endl;
+//         std::cout << "-------------------------" << std::endl;
+// //            cout << "Salary = " << c[4].as<float>() << endl;
+//        i += 1;
+//    }
+    std::cout << ft_max << " " << ft_min << std::endl;
+    std::cout << "Operation done successfully" << std::endl;
+
 
     setBackgroundRole(QPalette::Base);					//Background color: this nice gradient of gray
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);	//allow for expanding of the widget, aka use the minimumSizeHint and sizeHint
@@ -30,7 +86,8 @@ PlotGraph::PlotGraph(KPlotWidget* xyPlot, QWidget* parent): QWidget(parent) {
     xyPlot->setMinimumSize( 600, 600 );					//set minimum size in pixel
     xyData = new KPlotObject( Qt::blue, KPlotObject::Points, 10, KPlotObject::Star); //Bars are drawn in red with thickness 2
     xyData2 = new KPlotObject( Qt::red, KPlotObject::Lines, 1);//, KPlotObject::Square); //Bars are drawn in red with thickness 2
-    xyPlot->setLimits(0, 400, 0, 400);					//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
+    xyPlot->setLimits(0, 200, 0, 400);					//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
+//  xyPlot->setLimits(0, 400, ft_min, ft_max);				//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
     xyPlot->addPlotObject(xyData);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
     xyPlot->addPlotObject(xyData2);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
     xyPlot->setBackgroundColor( QColor(240, 240, 240) );		//background: light shade of gray
@@ -63,7 +120,7 @@ PlotGraph::PlotGraph(KPlotWidget* xyPlot, QWidget* parent): QWidget(parent) {
 //     painter.drawEllipse(100, 100, 40, -40);
 //     //draw floor
 //     painter.fillRect( 10, 595, 180, -20 , QColor(40, 40, 40) );
-// 
+//
 //     xyData->draw(&painter, xyPlot);
 //     xyPlot->update();
 //    update();

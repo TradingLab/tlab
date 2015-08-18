@@ -17,13 +17,13 @@
 #include "plotwindow.h"
 #include <QHBoxLayout>
  
-PlotWindow::PlotWindow(QWidget *parent) : KXmlGuiWindow(parent)
+PlotWindow::PlotWindow(pqxx::connection &C, QWidget *parent) : KXmlGuiWindow(parent)
 {
   
     master = new QWidget();
     xyPlot = new KPlotWidget();
 //    logic = new BallLogic();
-    plotGraph = new PlotGraph(xyPlot);
+    plotGraph = new PlotGraph(C, xyPlot);
     QHBoxLayout *layout = new QHBoxLayout;
 //    layout->addWidget(plotGraph);
     layout->addWidget(xyPlot);

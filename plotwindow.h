@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-
 #include "plotgraph.h"
 
 #ifndef PLOTWINDOW_H
@@ -27,7 +26,7 @@
 class PlotWindow : public KXmlGuiWindow
 {
   public:
-    PlotWindow(QWidget *parent=0);
+    PlotWindow(pqxx::connection &, QWidget *parent=0);
  
   private:
     QWidget *master;

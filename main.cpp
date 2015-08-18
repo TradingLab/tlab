@@ -67,7 +67,7 @@ int main (int argc, char *argv[])
 {
 
     string db, host, port, usr, pwd, con;
-    int len, i = 0;
+    int len;//, i = 0;
 
     if (argc ==  2) {
         if (string(argv[1]) == "-h") {
@@ -156,54 +156,57 @@ int main (int argc, char *argv[])
             return 1;
         }
 
-        /* Create SQL statement */
-        sql = "SELECT * from quotes where symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00AM'";
+//         /* Create SQL statement */
+//         sql = "SELECT * from quotes where symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00AM'";
+// 
+//         /* Create a non-transactional object. */
+//         nontransaction N(C);
+// 
+//         /* Execute SQL query */
+//         result R( N.exec( sql ));
+// 
+//         /* List down all the records */
+//         // SYMBOL         CHAR(10) NOT NULL,"
+//         // TSTAMP         TIMESTAMP NOT NULL,"
+//         // TLAST          TIMESTAMP,"
+//         // LAST_TRADE     FLOAT4,"
+//         // ASK            FLOAT4,"
+//         // BID            FLOAT4,"
+//         // VOLUME         INT4,"
+// 
+//         i = 0;
+//         for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
+// //	    cout << i << endl;
+//             cout << "Symbol     = " << c[0].as<string>() << endl;
+//             cout << "TStamp     = " << c[1].as<string>() << endl;
+//             cout << "TLast      = " << c[2].as<string>() << endl;
+//             cout << "Last trade = " << c[3].as<float>() << endl;
+//             cout << "-------------------------" << endl;
+// //            cout << "Salary = " << c[4].as<float>() << endl;
+//             i += 1;
+//         }
+//         cout << "Operation done successfully" << endl;
 
-        /* Create a non-transactional object. */
-        nontransaction N(C);
 
-        /* Execute SQL query */
-        result R( N.exec( sql ));
+        KAboutData aboutData( "tlab", 0,
+                              ki18n("tlab"), "1.0",
+                              ki18n("Technology lab and advanced trading strategies"),
+                              KAboutData::License_GPL,
+                              ki18n("Copyright (c) 2015 Jordi Estrada") );
+        argc = 1;
+        KCmdLineArgs::init( argc, argv, &aboutData );
 
-        /* List down all the records */
-        // SYMBOL         CHAR(10) NOT NULL,"
-        // TSTAMP         TIMESTAMP NOT NULL,"
-        // TLAST          TIMESTAMP,"
-        // LAST_TRADE     FLOAT4,"
-        // ASK            FLOAT4,"
-        // BID            FLOAT4,"
-        // VOLUME         INT4,"
+        KApplication app;
+        PlotWindow* mainWindow = new PlotWindow(C);
+        mainWindow->show();
 
-        i = 0;
-        for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
-//	    cout << i << endl;
-            cout << "Symbol     = " << c[0].as<string>() << endl;
-            cout << "TStamp     = " << c[1].as<string>() << endl;
-            cout << "TLast      = " << c[2].as<string>() << endl;
-            cout << "Last trade = " << c[3].as<float>() << endl;
-            cout << "-------------------------" << endl;
-//            cout << "Salary = " << c[4].as<float>() << endl;
-            i += 1;
-        }
-        cout << "Operation done successfully" << endl;
 
         C.disconnect ();
         cout << "Closed database successfully: " << C.dbname() << endl;
+        return app.exec();
+
     } catch (const std::exception &e) {
         cerr << e.what() << std::endl;
         return 1;
     }
-
-    KAboutData aboutData( "tlab", 0,
-                          ki18n("tlab"), "1.0",
-                          ki18n("Technology lab and advanced trading strategies"),
-                          KAboutData::License_GPL,
-                          ki18n("Copyright (c) 2015 Jordi Estrada") );
-    argc = 1;
-    KCmdLineArgs::init( argc, argv, &aboutData );
-
-    KApplication app;
-    PlotWindow* mainWindow = new PlotWindow();
-    mainWindow->show();
-    return app.exec();
 }

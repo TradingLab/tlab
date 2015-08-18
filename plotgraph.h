@@ -18,16 +18,26 @@
 #ifndef PLOTGRAPH_H
 #define PLOTGRAPH_H
 
+#include <vector>
+#include <string>
+#include <sstream>
+#include <cstdlib>
+#include <iostream>
+
+#include <pqxx/pqxx>
+
 #include <QWidget>
 #include <KPlotWidget>
 #include <KPlotObject>
 #include <KPlotAxis>
 #include <QtGui>
 
+using namespace std;
+
 class PlotGraph : public QWidget {
     Q_OBJECT
 public:
-    PlotGraph(KPlotWidget *xyPlot, QWidget *parent = 0);
+    PlotGraph(pqxx::connection &, KPlotWidget *xyPlot, QWidget *parent = 0);
     
 protected:
 //    BallLogic *logic;
