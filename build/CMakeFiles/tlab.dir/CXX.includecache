@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jordi/TradingLab/tlab/main.cpp
+vector
+-
+string
+-
+sstream
+-
+cstdlib
+-
+iostream
+-
+stdio.h
+-
+time.h
+-
+termios.h
+-
+unistd.h
+-
+pqxx/pqxx
+-
+
