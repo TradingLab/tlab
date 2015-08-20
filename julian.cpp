@@ -17,10 +17,13 @@
 
 #include "julian.h"
 
-int Julian::calc_julianToday()
+julian::julian() {
+}
+
+int julian::calc_julianToday()
 {
     int todDay, todMonth, todYear, julToday;
-    
+
     time_t t = time(0);
     struct tm *now = localtime( &t );
     todDay = now->tm_mday;
@@ -38,10 +41,10 @@ int Julian::calc_julianToday()
         return julToday = todDay + (153 * mt + 2) / 5 + 365 * yt + yt / 4 - 32083;
 
 }
-int Julian::calc_juliandate(int day, int month, int year)
+int julian::calc_juliandate(int day, int month, int year)
 {
     int julStart;
-    
+
     int a = (14 - month) / 12;
     int y = year + 4800 - a;
     int m = month + 12 * a - 3;
@@ -54,7 +57,7 @@ int Julian::calc_juliandate(int day, int month, int year)
 
 }
 
-int Julian::dates_diff(int day, int month, int year)
+int julian::dates_diff(int day, int month, int year)
 {
     int start = calc_juliandate(day, month, year);
     int today = calc_julianToday();

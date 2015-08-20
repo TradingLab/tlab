@@ -19,30 +19,15 @@
 #define JULIAN_H
 #include <ctime>
 
-class Julian {
-
-//     /* Default constructor: today's date */
-//     Julian() {
-//         // TODO
-//     }
+class julian {
+public:
+     /* Default constructor: today's date */
+     julian();
 // 
 //     Julian(int year, int month, int day) {
 //         // TODO
 //     }
 
-    explicit operator long() const {
-        return this->date;
-    }
-
-    long operator-(const Julian &other) const {
-        return this->date - other.date;
-    }
-
-    Julian operator-(long days) const {
-        return Julian();
-    }
-
-static 
     int calc_julianToday();
     int calc_juliandate(int, int, int);
     int dates_diff(int, int, int);

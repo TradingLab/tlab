@@ -38,7 +38,10 @@ class PlotGraph : public QWidget {
     Q_OBJECT
 public:
     PlotGraph(pqxx::connection &, KPlotWidget *xyPlot, QWidget *parent = 0);
-    
+
+private:
+    int PlotArea(pqxx::connection &, std::string, float *, float *, int *);
+    int TopPrice(pqxx::result &, float &, float &, float &);
 protected:
 //    BallLogic *logic;
     KPlotWidget *xyPlot;
