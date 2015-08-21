@@ -41,12 +41,16 @@ public:
 
 private:
     int PlotArea(pqxx::connection &, std::string, float *, float *, int *);
-    int TopPrice(pqxx::result &, float &, float &, float &);
+//    int TopPrice(pqxx::result &, float &, float &, float &, int &);
+    int bottomPrice(pqxx::result &, float &, float &, float &, int &);
+//    int meanCurve(pqxx::result &, float &, float &, int &);
 protected:
 //    BallLogic *logic;
     KPlotWidget *xyPlot;
-    KPlotObject *xyData;
-    KPlotObject *xyData2;
+    KPlotObject *xyData_green;
+    KPlotObject *xyData_red;
+    KPlotObject *xyData_blue;
+    KPlotObject *xyData_dark_blue;
 };
 
 #endif // PLOTGRAPH_H

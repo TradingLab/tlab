@@ -27,7 +27,7 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     float val_min, val_max;
     int num_items;
 
-    ini_tstamp = "'2015-08-20 12:00:00'";
+    ini_tstamp = "'2015-08-21 22:00:00'";
     PlotArea(C, ini_tstamp, &val_min, &val_max, &num_items);
 
     /* List down all the records */
@@ -60,7 +60,7 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
 //         i += 1;
 //     }
     std::cout << val_min << " " << val_max << " " << num_items << std::endl;
-    std::cout << "Operation done successfully" << std::endl;
+//    std::cout << "Operation done successfully" << std::endl;
 
 
     setBackgroundRole(QPalette::Base);					//Background color: this nice gradient of gray
@@ -69,22 +69,36 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     // For xy plot using KplotWidget
     this->xyPlot = xyPlot;						//set pointer
     xyPlot->setMinimumSize( 600, 600 );					//set minimum size in pixel
-    xyData = new KPlotObject( Qt::green, KPlotObject::Lines, 1);//, KPlotObject::Star); //Bars are drawn in red with thickness 2
-    xyData2 = new KPlotObject( Qt::blue, KPlotObject::Lines, 1);//, KPlotObject::Square); //Bars are drawn in red with thickness 2
-    xyPlot->setLimits(0, num_items, val_min, val_max);				//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
-    xyPlot->addPlotObject(xyData);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
-    xyPlot->addPlotObject(xyData2);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
+    xyData_green = new KPlotObject( Qt::green, KPlotObject::Lines, 1);	//, KPlotObject::Star); //Bars are drawn in red with thickness 2
+    xyData_red   = new KPlotObject( Qt::red, KPlotObject::Lines, 1);	//, KPlotObject::Star); //Bars are drawn in red with thickness 2
+    xyData_blue  = new KPlotObject( Qt::blue, KPlotObject::Lines, 1);	//, KPlotObject::Square); //Bars are drawn in red with thickness 2
+    xyData_dark_blue  = new KPlotObject( Qt::darkBlue, KPlotObject::Lines, 1);	//, KPlotObject::Square); //Bars are drawn in red with thickness 2
+
+    xyPlot->setLimits(0, num_items, val_min, val_max);			//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
+
+    xyPlot->addPlotObject(xyData_green);				//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
+    xyPlot->addPlotObject(xyData_red);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
+    xyPlot->addPlotObject(xyData_blue);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
+    xyPlot->addPlotObject(xyData_dark_blue);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
+
     xyPlot->setBackgroundColor( QColor(240, 240, 240) );		//background: light shade of gray
     xyPlot->setForegroundColor( Qt::black );				//foreground: black
     xyPlot->axis( KPlotWidget::BottomAxis )->setLabel("Time [s]");	//set x-axis labeling
-    xyPlot->axis( KPlotWidget::LeftAxis )->setLabel("Value [EUR/USD]");    //set y-axis labeling
+    xyPlot->axis( KPlotWidget::LeftAxis )->setLabel("Value [EUR/USD]");	//set y-axis labeling
+
     xyPlot->setShowGrid(true);
-    xyData->setShowLines( true );
+    xyData_green->setShowLines( true );
 
 
-    float margin = 0.2;
-    xyData->setLinePen( QPen( Qt::red, 4, Qt::SolidLine ) );
-    TopPrice(R_LT, val_min, val_max, margin);
+    xyData_green->setLinePen( QPen( Qt::green, 2, Qt::SolidLine ) );
+    xyData_red->setLinePen( QPen( Qt::red, 2, Qt::SolidLine ) );
+    xyData_blue->setLinePen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+    xyData_dark_blue->setLinePen( QPen( Qt::darkRed, 1, Qt::SolidLine ) );
+
+//    meanCurve(R_LT, val_min, val_max, num_items);
+    float margin = 0.12;
+    bottomPrice(R_LT, val_min, val_max, margin, num_items);
+//    TopPrice(R_LT, val_min, val_max, margin, num_items);
 
 // //    xyData->setShowBars( true );
 //    for(int x=1; x<2000; x+=10) {
@@ -94,11 +108,10 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
 //    }
 //    xyPlot->update();
 
-    xyData2->setLinePen( QPen( Qt::blue, 1, Qt::SolidLine ) );
     i = 0;
     for (pqxx::result::const_iterator c = R_LT.begin(); c != R_LT.end(); ++c) {
         last_price = c[0].as<float>();
-        xyData2->addPoint(i,last_price);
+        xyData_blue->addPoint(i,last_price);
         i += 1;
     }
     xyPlot->update();
@@ -160,31 +173,184 @@ int PlotGraph::PlotArea(pqxx::connection & C, std::string ini_tstamp, float *val
 }
 
 // Top Price
-int PlotGraph::TopPrice(pqxx::result &R, float &val_min, float &val_max, float &margin) {
-    int i = 0, t_max;
-    float first_price, max_price, threshold_price, last_price, abs_margin;
-    
-    abs_margin = (val_max - val_min) * margin;
-    
+// int PlotGraph::TopPrice(pqxx::result &R, float &val_min, float &val_max, float &margin, int &items) {
+//     int i = 0;
+//     int t_ini, t_max, t_th_max;
+//     int t_min, t_th_min;
+//     float first_price, last_price;
+//     float max_price, threshold_max_price;
+//     float min_price, threshold_min_price;
+//     float abs_margin;
+// 
+//     abs_margin = (val_max - val_min) * margin;
+// 
+//     pqxx::result::const_iterator c_ini = R.begin();
+//     first_price = c_ini[0].as<float>();
+//     t_min = 1;
+//     min_price = first_price;
+//     for(int repeat=0; repeat<20; repeat++) {
+//         i = 1;
+//         t_ini = t_min;
+//         first_price = min_price;
+//         max_price = 0;
+//         for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
+//             if (i >= t_ini) {
+//                 last_price = c[0].as<float>();
+//                 if (last_price >= max_price) {
+//                     t_max = i;
+//                     max_price = last_price;
+//                     threshold_max_price = max_price - abs_margin;
+//                 } else {
+//                     if (last_price <= threshold_max_price) {
+//                         t_th_max = i;
+//                         break;
+//                     }
+//                 }
+//             }
+//             i += 1;
+//         }
+//         xyData_green->addPoint(t_ini,first_price);
+//         xyData_green->addPoint(t_max,max_price);
+//         xyData_green->addPoint(t_th_max,threshold_max_price);
+//         xyPlot->update();
+// 
+//         i = 1;
+//         t_ini = t_max;
+//         first_price = max_price;
+//         min_price = max_price;
+//         for (pqxx::result::const_iterator d = R.begin(); d != R.end(); ++d) {
+//             if (i >= t_ini) {
+// 
+//                 last_price = d[0].as<float>();
+//                 if (last_price <= min_price) {
+//                     t_min = i;
+//                     min_price = last_price;
+//                     threshold_min_price = min_price + abs_margin;
+//                 } else {
+//                     if (last_price >= threshold_min_price) {
+//                         t_th_min = i;
+//                         break;
+//                     }
+//                 }
+//             }
+//             i += 1;
+//         }
+//         xyData_red->addPoint(t_ini,first_price);
+//         xyData_red->addPoint(t_min,min_price);
+//         xyData_red->addPoint(t_th_min,threshold_min_price);
+//         xyPlot->update();
+// 	if (i>=items) break;
+// 
+//     }
+//     return 0;
+// 
+// }
+
+// Bottom Price
+int PlotGraph::bottomPrice(pqxx::result &R, float &val_min, float &val_max, float &margin, int &items) {
+    int i = 0;
+    int t_ini, t_max, t_th_max;
+    int t_min, t_th_min;
+    float first_price, last_price;
+    float max_price, threshold_max_price;
+    float min_price, threshold_min_price;
+//     float abs_margin;
+// 
+//     abs_margin = (val_max - val_min) * margin;
+
     pqxx::result::const_iterator c_ini = R.begin();
     first_price = c_ini[0].as<float>();
-    
-    for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
-        last_price = c[0].as<float>();
-	if (last_price >= max_price) {
-	  t_max = i;
-	  max_price = last_price;
-	  threshold_price = max_price - abs_margin;
-	} else {
-	  if (last_price <= threshold_price) break; 
-	}
-//        xyData->setLinePen( QPen( Qt::red, 3.0, Qt::NoPen ) );
-        i += 1;
+    t_min = 0;
+    t_max = 0;
+    max_price = first_price;
+    for(int repeat=0; repeat<100; repeat++) {
+        i = 1;
+        t_ini = t_max;
+        first_price = max_price;
+        min_price = max_price;
+	threshold_min_price = 0.0018;
+	t_th_min = 0;
+        for (pqxx::result::const_iterator d = R.begin(); d != R.end(); ++d) {
+            if (i >= t_ini) {
+
+                last_price = d[0].as<float>();
+                if (last_price <= min_price) {
+                    t_min = i;
+                    min_price = last_price;
+                    threshold_min_price = min_price + 0.0018; //abs_margin; Typical value
+                } else {
+                    if (last_price >= threshold_min_price) {
+                        t_th_min = i;
+                        break;
+                    }
+                }
+            }
+            i += 1;
+        }
+        xyData_red->addPoint(t_ini,first_price);
+        xyData_red->addPoint(t_min,min_price);
+        if (t_th_min >0) xyData_red->addPoint(t_th_min,threshold_min_price);
+        xyPlot->update();
+	if (i>=items) break;
+
+        i = 1;
+        t_ini = t_min;
+        first_price = min_price;
+        max_price = 0;
+	threshold_max_price = - 0.0022;
+	t_th_max = 0;
+        for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
+            if (i >= t_ini) {
+                last_price = c[0].as<float>();
+                if (last_price >= max_price) {
+                    t_max = i;
+                    max_price = last_price;
+                    threshold_max_price = max_price - 0.0022; //abs_margin; Typical value
+                } else {
+                    if (last_price <= threshold_max_price) {
+                        t_th_max = i;
+                        break;
+                    }
+                }
+            }
+            i += 1;
+        }
+        xyData_green->addPoint(t_ini,first_price);
+        xyData_green->addPoint(t_max,max_price);
+        if (t_th_max > 0) xyData_green->addPoint(t_th_max,threshold_max_price);
+        xyPlot->update();
+
     }
-    xyData->addPoint(1,first_price);
-    xyData->addPoint(t_max,max_price);
-    xyData->addPoint(i,threshold_price);
-    xyPlot->update();
     return 0;
 
 }
+
+//Differential Curve
+//int PlotGraph::meanCurve(pqxx::result &R, float &val_min, float &val_max, int &items) {
+//     int n = 10; //Items for mean value
+//     int i, j;
+//     float last_price, mean_price;
+// 
+// //    bias_price = val_min + (val_max-val_min)/2;
+// 
+//     for (j=n; j<=items; ++j) {
+//         i = 0;
+//         mean_price = 0;
+//         for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
+//             last_price = c[0].as<float>();
+//             if (i>=j-n && i<j) {
+//                 mean_price = (mean_price+last_price)/2;
+//             }
+//             i +=1;
+//         }
+//         cout << j << " " << mean_price << endl;
+// //      xyData_dark_blue->addPoint(j,bias_price+diff_price);
+//         xyData_dark_blue->addPoint(j,mean_price+0.001);
+// //      xyData_dark_blue->addPoint(i,1.128);
+// //      xyData_dark_blue->addPoint(t_max,max_price);
+// //      xyData_dark_blue->addPoint(t_th_max,threshold_max_price);
+//     }
+//     xyPlot->update();
+//     return 0;
+// 
+// }
