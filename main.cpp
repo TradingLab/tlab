@@ -200,7 +200,6 @@ int main (int argc, char *argv[])
         PlotWindow* mainWindow = new PlotWindow(C);
         mainWindow->show();
 
-
         C.disconnect ();
         cout << "Closed database successfully: " << C.dbname() << endl;
         return app.exec();
