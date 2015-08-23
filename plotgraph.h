@@ -40,7 +40,7 @@ public:
     PlotGraph(pqxx::connection &, KPlotWidget *xyPlot, QWidget *parent = 0);
 
 private:
-    int plotArea(pqxx::connection &, std::string, std::string, float *, float *, int *);
+    int plotArea(pqxx::connection &, std::string, std::string, std::string, float *, float *, int *);
 //    int TopPrice(pqxx::result &, float &, float &, float &, int &);
     int plotMinMaxPrices(pqxx::result &, KPlotWidget* , float &, float &);
     int plotLine(KPlotWidget*, const QColor &, int &,float &,int &, float &);

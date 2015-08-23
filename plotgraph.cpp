@@ -21,51 +21,32 @@
 
 // Plot Graph
 PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent): QWidget(parent) {
-    std::string sql, tstamp, ini_tstamp, end_tstamp;
+    std::string symbol, symbolVal, sql, tstamp, ini_tstamp, end_tstamp;
     int i = 0;
     float last_price;
     float val_min, val_max;
     int num_items;
-
+    
     /* A week trading period */
     ini_tstamp = "'2015-08-15 20:00:00'";
-    end_tstamp = "'2015-08-21 20:00:00'";
+    end_tstamp = "'2015-08-24 20:00:00'";
+    symbol = "'EURJPY=X'";
+    cout << "Symbol: " << symbol << endl;
     cout << "Quotes period: " << ini_tstamp << " to " << end_tstamp << endl;
-    plotArea(C, ini_tstamp, end_tstamp, &val_min, &val_max, &num_items);
-
-    /* List down all the records */
-    // SYMBOL         CHAR(10) NOT NULL,"
-    // TSTAMP         TIMESTAMP NOT NULL,"
-    // TLAST          TIMESTAMP,"
-    // LAST_TRADE     FLOAT4,"
-    // ASK            FLOAT4,"
-    // BID            FLOAT4,"
-    // VOLUME         INT4,"
+    
+    plotArea(C, symbol, ini_tstamp, end_tstamp, &val_min, &val_max, &num_items);
+    std::cout << "Quote Value from " << val_min << " to " << val_max << " num. items " << num_items << std::endl;
 
     /* Create SQL statement */
-    sql = "SELECT last_trade tstamp FROM quotes WHERE symbol = 'EURUSD=X' AND tstamp >=" + ini_tstamp +\
+    sql = "SELECT last_trade FROM quotes WHERE symbol = " + \
+          symbol + " AND tstamp >=" + ini_tstamp +\
           "AND  tstamp <=" + end_tstamp;
 
-//    N_CNT.commit();
     /* Create a non-transactional object. */
     pqxx::nontransaction N_LT(C);
 
     /* Execute SQL query */
     pqxx::result R_LT( N_LT.exec( sql ));
-
-//     i = 0;
-//     for (pqxx::result::const_iterator c = R_LT.begin(); c != R_LT.end(); ++c) {
-// //        cout << i << endl;
-// //         std::cout << "Symbol     = " << c[0].as<string>() << std::endl;
-// //         std::cout << "TStamp     = " << c[1].as<string>() << std::endl;
-// //         std::cout << "TLast      = " << c[2].as<string>() << std::endl;
-// //         std::cout << "-------------------------" << std::endl;
-// // //            cout << "Salary = " << c[4].as<float>() << endl;
-//         i += 1;
-//     }
-    std::cout << "Quote Value from " << val_min << " to " << val_max << " num. items " << num_items << std::endl;
-//    std::cout << "Operation done successfully" << std::endl;
-
 
     setBackgroundRole(QPalette::Base);					//Background color: this nice gradient of gray
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);	//allow for expanding of the widget, aka use the minimumSizeHint and sizeHint
@@ -73,60 +54,58 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     // For xy plot using KplotWidget
     this->xyPlot = xyPlot;						//set pointer
     xyPlot->setMinimumSize( 600, 600 );					//set minimum size in pixel
-    xyData_green = new KPlotObject( Qt::green, KPlotObject::Lines, 1);	//, KPlotObject::Star); //Bars are drawn in red with thickness 2
-    xyData_red   = new KPlotObject( Qt::red, KPlotObject::Lines, 1);	//, KPlotObject::Star); //Bars are drawn in red with thickness 2
     xyData_blue  = new KPlotObject( Qt::blue, KPlotObject::Lines, 1);	//, KPlotObject::Square); //Bars are drawn in red with thickness 2
-    xyData_dark_blue  = new KPlotObject( Qt::darkBlue, KPlotObject::Lines, 1);	//, KPlotObject::Square); //Bars are drawn in red with thickness 2
 
     xyPlot->setLimits(0, num_items, val_min, val_max);			//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
 
     xyPlot->addPlotObject(xyData_blue);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
-    xyPlot->addPlotObject(xyData_dark_blue);					//assign the data pointer to the graph. From now on, if the data pointer contains data, it is plotted in the graph
 
     xyPlot->setBackgroundColor( QColor(240, 240, 240) );		//background: light shade of gray
     xyPlot->setForegroundColor( Qt::black );				//foreground: black
     xyPlot->axis( KPlotWidget::BottomAxis )->setLabel("Time [s]");	//set x-axis labeling
-    xyPlot->axis( KPlotWidget::LeftAxis )->setLabel("Value [EUR/USD]");	//set y-axis labeling
+    symbolVal = "Value " + symbol;
+    xyPlot->axis( KPlotWidget::LeftAxis )->setLabel(symbolVal.c_str());	//set y-axis labeling
 
     xyPlot->setShowGrid(true);
 
     xyData_blue->setLinePen( QPen( Qt::blue, 1, Qt::SolidLine ) );
-    xyData_dark_blue->setLinePen( QPen( Qt::darkRed, 1, Qt::SolidLine ) );
+//    xyData_dark_blue->setLinePen( QPen( Qt::darkRed, 1, Qt::SolidLine ) );
 
 //    meanCurve(R_LT, val_min, val_max, num_items);
-    float th_min = 0.0018; //Ask/Bid profit price limit
-    float th_max = 0.0022; //Ask/Bid loss price limit
+    float th_min = 0.0018 + 0.0002; //Ask profit price limit
+    float th_max = 0.0018 + 0.0002; //Bid profit price limit
     plotMinMaxPrices(R_LT, xyPlot, th_min, th_max); //EURUSD
-//    TopPrice(R_LT, val_min, val_max, margin, num_items);
-
-// //    xyData->setShowBars( true );
-//    for(int x=1; x<2000; x+=10) {
-//        xyData->addPoint(x,1);
-//        xyData->addPoint(x,1.109);
-//        xyData->setLinePen( QPen( Qt::red, 3.0, Qt::NoPen ) );
-//    }
-//    xyPlot->update();
+    th_min = 0.0009; //Ask low profit price limit
+    th_max = 0.0009; //Bid low loss price limit
+    plotMinMaxPrices(R_LT, xyPlot, th_min, th_max); //EURUSD
 
     i = 0;
     for (pqxx::result::const_iterator c = R_LT.begin(); c != R_LT.end(); ++c) {
+//         SYMBOL     = c[0].as<string>();
+// 	TSTAMP     = c[1].as<string>();
+//         TLAST      = c[2].as<string>();
         last_price = c[0].as<float>();
-	tstamp = c[1].as<string>();
+//         LAST_TRADE = c[3].as<float>();
+//         ASK        = c[4].as<float>();
+//         BID        = c[5].as<float>();
+//         VOLUME     = c[6].as<int>();;
         xyData_blue->addPoint(i,last_price);
         i += 1;
     }
-//         xyPlot->update();
-//         xyPlot->show();
-    xyPlot->antialiasing();
-//    pqxx::internal::sleep_seconds(4);
+        xyPlot->update();
+        xyPlot->show();
+   xyPlot->antialiasing();
+   pqxx::internal::sleep_seconds(4);
 }
 
 // Plot Area
-int PlotGraph::plotArea(pqxx::connection & C, std::string ini_tstamp, std::string end_tstamp, float *val_min, float *val_max, int *num_items) {
+int PlotGraph::plotArea(pqxx::connection & C, std::string symbol, std::string ini_tstamp, std::string end_tstamp, float *val_min, float *val_max, int *num_items) {
     std::string sql;
     float v_min, v_max;
     int n_items;
     /* Create SQL statement */
-    sql = "SELECT MAX(last_trade) FROM quotes WHERE symbol = 'EURUSD=X' AND tstamp > " + ini_tstamp + \
+    sql = "SELECT MAX(last_trade) FROM quotes WHERE symbol = " + \
+          symbol + " AND tstamp > " + ini_tstamp + \
           " AND tstamp <= " + end_tstamp;
 
     /* Create a non-transactional object. */
@@ -142,7 +121,8 @@ int PlotGraph::plotArea(pqxx::connection & C, std::string ini_tstamp, std::strin
     *val_max = v_max;
 
     /* Create SQL statement */
-    sql = "SELECT MIN(last_trade) FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > " + ini_tstamp + \
+    sql = "SELECT MIN(last_trade) FROM quotes WHERE symbol = " + \
+          symbol + " AND tstamp > " + ini_tstamp + \
           " AND tstamp <= " + end_tstamp;
 
     N_MAX.commit();
@@ -158,7 +138,8 @@ int PlotGraph::plotArea(pqxx::connection & C, std::string ini_tstamp, std::strin
     }
     *val_min = v_min;
     /* Create SQL statement */
-    sql = "SELECT COUNT(*) FROM quotes WHERE symbol = 'EURUSD=X' and tstamp > " + ini_tstamp + \
+    sql = "SELECT COUNT(*) FROM quotes WHERE symbol = " + \
+          symbol + " AND tstamp > " + ini_tstamp + \
           " AND tstamp <= " + end_tstamp;
 
     N_MIN.commit();
