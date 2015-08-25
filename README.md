@@ -7,13 +7,13 @@ Trading charts and algorithms test
 * Program directory; HOME/TradingLab/tlab
 * PostgreSQL lib: libpqxx
 # References
- NASDAQ Symbols download
+- NASDAQ Symbols download
 * http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=nasdaq&render=download
- NYSE Symbols download
+- NYSE Symbols download
 * http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=nyse&render=download
- ALL Symbols download
+- ALL Symbols download
 * http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=all&render=download
-Gummy stuff
+- Gummy stuff
 * http://www.financialwisdomforum.org/gummy-stuff/gummy_stuff.htm
 
 
