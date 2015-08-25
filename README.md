@@ -23,5 +23,7 @@ ALL Symbols download
 Gummy stuff
 
 * http://www.financialwisdomforum.org/gummy-stuff/gummy_stuff.htm
+* http://www.financialwisdomforum.org/gummy-stuff/Yahoo-data.htm
+
 
 
