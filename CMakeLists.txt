@@ -22,3 +22,4 @@ target_link_libraries(tlab ${KDE4_KDEUI_LIBS})
 add_definitions(-fexceptions -std=c++11)
 
 install(TARGETS tlab RUNTIME DESTINATION bin)
+
