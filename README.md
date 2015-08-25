@@ -1,5 +1,5 @@
 # tlab
-Trading charts and algorithms test
+Trading charts and algorithms test, see GitHub  Wiki reference.
 # Environment
 * Operating System: openSUSE 13.1
 * Development tool: KDevelop 4.5.2 for KDE 4.11.5
