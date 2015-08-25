@@ -4,7 +4,6 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/tlab.dir/tlab_automoc.o"
   "CMakeFiles/tlab.dir/plotgraph.o"
   "CMakeFiles/tlab.dir/plotwindow.o"
-  "CMakeFiles/tlab.dir/julian.o"
   "CMakeFiles/tlab.dir/main.o"
   "tlab.pdb"
   "tlab"

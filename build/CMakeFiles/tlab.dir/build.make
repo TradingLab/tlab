@@ -121,32 +121,9 @@ CMakeFiles/tlab.dir/plotwindow.o.provides: CMakeFiles/tlab.dir/plotwindow.o.requ
 
 CMakeFiles/tlab.dir/plotwindow.o.provides.build: CMakeFiles/tlab.dir/plotwindow.o
 
-CMakeFiles/tlab.dir/julian.o: CMakeFiles/tlab.dir/flags.make
-CMakeFiles/tlab.dir/julian.o: ../julian.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_4)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/tlab.dir/julian.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/tlab.dir/julian.o -c /home/jordi/TradingLab/tlab/julian.cpp
-
-CMakeFiles/tlab.dir/julian.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tlab.dir/julian.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/jordi/TradingLab/tlab/julian.cpp > CMakeFiles/tlab.dir/julian.i
-
-CMakeFiles/tlab.dir/julian.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tlab.dir/julian.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/jordi/TradingLab/tlab/julian.cpp -o CMakeFiles/tlab.dir/julian.s
-
-CMakeFiles/tlab.dir/julian.o.requires:
-.PHONY : CMakeFiles/tlab.dir/julian.o.requires
-
-CMakeFiles/tlab.dir/julian.o.provides: CMakeFiles/tlab.dir/julian.o.requires
-	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/julian.o.provides.build
-.PHONY : CMakeFiles/tlab.dir/julian.o.provides
-
-CMakeFiles/tlab.dir/julian.o.provides.build: CMakeFiles/tlab.dir/julian.o
-
 CMakeFiles/tlab.dir/main.o: CMakeFiles/tlab.dir/flags.make
 CMakeFiles/tlab.dir/main.o: ../main.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jordi/TradingLab/tlab/build/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/tlab.dir/main.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/tlab.dir/main.o -c /home/jordi/TradingLab/tlab/main.cpp
 
@@ -172,7 +149,6 @@ tlab_OBJECTS = \
 "CMakeFiles/tlab.dir/tlab_automoc.o" \
 "CMakeFiles/tlab.dir/plotgraph.o" \
 "CMakeFiles/tlab.dir/plotwindow.o" \
-"CMakeFiles/tlab.dir/julian.o" \
 "CMakeFiles/tlab.dir/main.o"
 
 # External object files for target tlab
@@ -181,7 +157,6 @@ tlab_EXTERNAL_OBJECTS =
 tlab: CMakeFiles/tlab.dir/tlab_automoc.o
 tlab: CMakeFiles/tlab.dir/plotgraph.o
 tlab: CMakeFiles/tlab.dir/plotwindow.o
-tlab: CMakeFiles/tlab.dir/julian.o
 tlab: CMakeFiles/tlab.dir/main.o
 tlab: CMakeFiles/tlab.dir/build.make
 tlab: /usr/lib64/libpqxx.so
@@ -203,7 +178,6 @@ CMakeFiles/tlab.dir/build: tlab
 CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/tlab_automoc.o.requires
 CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/plotgraph.o.requires
 CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/plotwindow.o.requires
-CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/julian.o.requires
 CMakeFiles/tlab.dir/requires: CMakeFiles/tlab.dir/main.o.requires
 .PHONY : CMakeFiles/tlab.dir/requires
 

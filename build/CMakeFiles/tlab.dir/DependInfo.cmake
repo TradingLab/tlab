@@ -4,7 +4,6 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/jordi/TradingLab/tlab/julian.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/julian.o"
   "/home/jordi/TradingLab/tlab/main.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/main.o"
   "/home/jordi/TradingLab/tlab/plotgraph.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/plotgraph.o"
   "/home/jordi/TradingLab/tlab/plotwindow.cpp" "/home/jordi/TradingLab/tlab/build/CMakeFiles/tlab.dir/plotwindow.o"

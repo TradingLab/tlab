@@ -182,21 +182,6 @@ uninstall/fast:
 .PHONY : uninstall/fast
 
 # target to build an object file
-julian.o:
-	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/julian.o
-.PHONY : julian.o
-
-# target to preprocess a source file
-julian.i:
-	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/julian.i
-.PHONY : julian.i
-
-# target to generate assembly for a file
-julian.s:
-	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/julian.s
-.PHONY : julian.s
-
-# target to build an object file
 main.o:
 	$(MAKE) -f CMakeFiles/tlab.dir/build.make CMakeFiles/tlab.dir/main.o
 .PHONY : main.o
@@ -271,9 +256,6 @@ help:
 	@echo "... tlab"
 	@echo "... tlab_automoc"
 	@echo "... uninstall"
-	@echo "... julian.o"
-	@echo "... julian.i"
-	@echo "... julian.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

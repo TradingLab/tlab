@@ -31,10 +31,4 @@ PlotWindow::PlotWindow(pqxx::connection &C, QWidget *parent) : KXmlGuiWindow(par
     setCentralWidget(master);
     setupGUI();
  
-//     QTimer *timer = new QTimer(this);
-//     connect(timer, SIGNAL(timeout()),
-//             logic, SLOT( nextTimeStep() ) );
-//     connect(timer, SIGNAL(timeout()),
-//             ballGraph, SLOT(nextAnimationFrame()));
-//     timer->start(10);
 }

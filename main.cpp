@@ -156,38 +156,6 @@ int main (int argc, char *argv[])
             return 1;
         }
 
-//         /* Create SQL statement */
-//         sql = "SELECT * from quotes where symbol = 'EURUSD=X' and tstamp > '2015-08-17 00:00:00AM'";
-// 
-//         /* Create a non-transactional object. */
-//         nontransaction N(C);
-// 
-//         /* Execute SQL query */
-//         result R( N.exec( sql ));
-// 
-//         /* List down all the records */
-//         // SYMBOL         CHAR(10) NOT NULL,"
-//         // TSTAMP         TIMESTAMP NOT NULL,"
-//         // TLAST          TIMESTAMP,"
-//         // LAST_TRADE     FLOAT4,"
-//         // ASK            FLOAT4,"
-//         // BID            FLOAT4,"
-//         // VOLUME         INT4,"
-// 
-//         i = 0;
-//         for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
-// //	    cout << i << endl;
-//             cout << "Symbol     = " << c[0].as<string>() << endl;
-//             cout << "TStamp     = " << c[1].as<string>() << endl;
-//             cout << "TLast      = " << c[2].as<string>() << endl;
-//             cout << "Last trade = " << c[3].as<float>() << endl;
-//             cout << "-------------------------" << endl;
-// //            cout << "Salary = " << c[4].as<float>() << endl;
-//             i += 1;
-//         }
-//         cout << "Operation done successfully" << endl;
-
-
         KAboutData aboutData( "tlab", 0,
                               ki18n("tlab"), "1.0",
                               ki18n("Technology lab and advanced trading strategies"),
@@ -199,13 +167,19 @@ int main (int argc, char *argv[])
         KApplication app;
         PlotWindow* mainWindow = new PlotWindow(C);
         mainWindow->show();
-
         C.disconnect ();
         cout << "Closed database successfully: " << C.dbname() << endl;
         return app.exec();
 
+//     QTimer *timer = new QTimer(this);
+//     connect(timer, SIGNAL(timeout()),
+//             logic, SLOT( nextTimeStep() ) );
+//     connect(timer, SIGNAL(timeout()),
+//             ballGraph, SLOT(nextAnimationFrame()));
+//     timer->start(10);
+
     } catch (const std::exception &e) {
         cerr << e.what() << std::endl;
         return 1;
-    } 
+    }
 }

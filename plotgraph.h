@@ -41,9 +41,9 @@ public:
 
 private:
     int plotArea(pqxx::connection &, std::string, std::string, std::string, float *, float *, int *);
-//    int TopPrice(pqxx::result &, float &, float &, float &, int &);
-    int plotMinMaxPrices(pqxx::result &, KPlotWidget* , float &, float &);
-    int plotLine(KPlotWidget*, const QColor &, int &,float &,int &, float &);
+    int plotMinMaxPrices(pqxx::result &, KPlotWidget*, float &, float &);
+    int plotPrices(pqxx::result &, KPlotWidget*,float &,float &);
+    int plotLine(KPlotWidget*, const QColor &, bool, int &,float &,int &, float &);
 //    int meanCurve(pqxx::result &, float &, float &, int &);
 protected:
 //    BallLogic *logic;
