@@ -6,14 +6,14 @@ Trading charts and algorithms test
 * Languaje: C++
 * Program directory; HOME/TradingLab/tlab
 * PostgreSQL lib: libpqxx
-#References
-NASDAQ Symbols download
+# References
+## NASDAQ Symbols download
 * http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=nasdaq&render=download
-NYSE Symbols download
+## NYSE Symbols download
 * http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=nyse&render=download
-ALL Symbols download
+##ALL Symbols download
 * http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=all&render=download
-Gummy staff
+## Gummy staff
 * http://www.financialwisdomforum.org/gummy-stuff/gummy_stuff.htm
 
 
