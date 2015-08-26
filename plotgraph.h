@@ -40,11 +40,11 @@ public:
     PlotGraph(pqxx::connection &, KPlotWidget *xyPlot, QWidget *parent = 0);
 
 private:
-    int plotArea(pqxx::connection &, std::string, std::string, std::string, float *, float *, int *);
-    int plotMinMaxPrices(pqxx::result &, KPlotWidget*, float &, float &);
-    int plotPrices(pqxx::result &, KPlotWidget*,float &,float &);
-    int plotLine(KPlotWidget*, const QColor &, bool, int &,float &,int &, float &);
-//    int meanCurve(pqxx::result &, float &, float &, int &);
+    int plotArea(pqxx::connection &, std::string, std::string, std::string, double *, double *, float *, float *, int *);
+    double julianTime(std::string); 
+    int plotMinMaxPrices(pqxx::result &, KPlotWidget*,double &, float &, float &);
+    int plotPrices(pqxx::result &, KPlotWidget*,double &,float &,float &);
+    int plotLine(KPlotWidget*, const QColor &, bool, double &,float &,double &, float &);
 protected:
 //    BallLogic *logic;
     KPlotWidget *xyPlot;

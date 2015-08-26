@@ -27,7 +27,9 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     float val_min, val_max;
     int num_items;
     float th_min, th_max;
-
+    float th_min2, th_max2;
+    float th_min3, th_max3;
+    double jd_min, jd_max;
     /* A week trading period */
 //  EURUSD=X
 //  EURGBP=X
@@ -39,15 +41,34 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
 //  EURNZD=X
 //  EURSGD=X
 //  EURNOK=X
-//  ini_tstamp = "'2015-08-15 20:00:00'"; //Week 34
+//  ini_tstamp = "'2015-08-17 00:00:00'"; //Week 34
 //  end_tstamp = "'2015-08-21 20:00:00'";
-    ini_tstamp = "'2015-08-24 00:00:00'"; //Week 35
-    end_tstamp = "'2015-08-28 21:00:00'";
+    ini_tstamp = "'2015-08-26 14:00:00'"; //Week 35
+    end_tstamp = "'2015-08-29 00:00:00'";
+    /*  plotMinMaxPrices */
+    th_min = 0.0018 + 0.0002;  //Ask profit price limit
+    th_max = 0.0018 + 0.0002;  //Bid profit price limit
+    th_min2 = 0.0018 - 0.0002; //Ask profit price limit
+    th_max2 = 0.0018 - 0.0002; //Bid profit price limit
+    th_min3 = 0.0018 - 0.0004; //Ask profit price limit
+    th_max3 = 0.0018 - 0.0004; //Bid profit price limit
+
+    /* Present time calc */
+    char buf[80];
+    time_t t = time(0);
+    struct tm *tm = localtime( &t );
+    strftime(buf, sizeof(buf), "%Y-%m-%d %X", tm);
+    end_tstamp = buf;
+    end_tstamp = "'" + end_tstamp + "'";
+    /* En present time calc */
+
     symbol = "'EURUSD=X'";
     cout << "Symbol: " << symbol << endl;
     cout << "Quotes period: " << ini_tstamp << " to " << end_tstamp << endl;
 
-    plotArea(C, symbol, ini_tstamp, end_tstamp, &val_min, &val_max, &num_items);
+    plotArea(C, symbol, ini_tstamp, end_tstamp, &jd_min, &jd_max, &val_min, &val_max, &num_items);
+    cout.precision(10);
+    cout << "period in Jul: " << jd_min << " to " << jd_max << endl;
     std::cout << "Quote Value from " << val_min << " to " << val_max << " num. items " << num_items << std::endl;
 
     /* Create SQL statement */
@@ -55,7 +76,7 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
           symbol + " AND tstamp >=" + ini_tstamp +\
           "AND  tstamp <=" + end_tstamp;
 
-    /* Create a non-transactional object. */
+	  /* Create a non-transactional object. */
     pqxx::nontransaction N(C);
 
     /* Execute SQL query */
@@ -68,25 +89,22 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     // For xy plot using KplotWidget
     this->xyPlot = xyPlot;						//set pointer
     xyPlot->setMinimumSize( 600, 600 );					//set minimum size in pixel
-    xyPlot->setLimits(0, num_items, val_min, val_max);			//the data limits are 0 to 100 in the x-direction and 0 to 600 in the y-direction (initially we start at point 590)
+//    xyPlot->setLimits(0, num_items, val_min, val_max);
+    xyPlot->setLimits(0, jd_max - jd_min, val_min, val_max);			//
     xyPlot->setBackgroundColor( QColor(240, 240, 240) );		//background: light shade of gray
     xyPlot->setForegroundColor( Qt::black );				//foreground: black
-    xyPlot->axis( KPlotWidget::BottomAxis )->setLabel("Time [s]");	//set x-axis labeling
+    xyPlot->axis( KPlotWidget::BottomAxis )->setLabel("Time [Julian Day]");	//set x-axis labeling
     xyPlot->axis( KPlotWidget::LeftAxis )->setLabel(symbolVal.c_str());	//set y-axis labeling
     xyPlot->setShowGrid(true);
     xyPlot->antialiasing();
 
-    plotPrices(R, xyPlot, val_min, val_max);
+    plotPrices(R, xyPlot, jd_min, val_min, val_max);
 
     N.commit();
 
-    //    meanCurve(R_LT, val_min, val_max, num_items);
-    th_min = 0.0018 + 0.0002; //Ask profit price limit
-    th_max = 0.0018 + 0.0002; //Bid profit price limit
-    plotMinMaxPrices(R, xyPlot, th_min, th_max); //EURUSD
-//     th_min = 0.0060; //Ask low profit price limit
-//     th_max = 0.0060; //Bid low loss price limit
-//     plotMinMaxPrices(R_LT, xyPlot, th_min, th_max); //EURUSD
+//     plotMinMaxPrices(R, xyPlot, jd_min, th_min, th_max); 
+//     plotMinMaxPrices(R, xyPlot, jd_min, th_min2, th_max2);
+    plotMinMaxPrices(R, xyPlot, jd_min, th_min3, th_max3);
 
     xyPlot->update();
     xyPlot->show();
@@ -94,11 +112,27 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
 }
 
 // Plot Area
-int PlotGraph::plotArea(pqxx::connection & C, std::string symbol, std::string ini_tstamp, std::string end_tstamp, float *val_min, float *val_max, int *num_items) {
-    std::string sql;
+int PlotGraph::plotArea(pqxx::connection & C, std::string symbol, std::string ini_tstamp, std::string end_tstamp, double *jd_min, double *jd_max, float *val_min, float *val_max, int *num_items) {
+    std::string sql, ts;
     float v_min, v_max;
     int n_items;
-    /* Create SQL statement */
+    double julTime;
+
+    /* Convert time stamp to Julian Date */
+    ts = ini_tstamp.substr(1,19);
+    julTime = julianTime(ts);
+    *jd_min = julTime;
+
+    ts = end_tstamp.substr(1,19);
+    julTime = julianTime(ts);
+    *jd_max = julTime;
+
+    /* Create Max price SQL statement */
+    sql = "SELECT MAX(last_trade) FROM quotes WHERE symbol = " + \
+          symbol + " AND tstamp > " + ini_tstamp + \
+          " AND tstamp <= " + end_tstamp;
+    /* Create Max price SQL statement */
+
     sql = "SELECT MAX(last_trade) FROM quotes WHERE symbol = " + \
           symbol + " AND tstamp > " + ini_tstamp + \
           " AND tstamp <= " + end_tstamp;
@@ -115,7 +149,7 @@ int PlotGraph::plotArea(pqxx::connection & C, std::string symbol, std::string in
     }
     *val_max = v_max;
 
-    /* Create SQL statement */
+    /* Create Min Price SQL statement */
     sql = "SELECT MIN(last_trade) FROM quotes WHERE symbol = " + \
           symbol + " AND tstamp > " + ini_tstamp + \
           " AND tstamp <= " + end_tstamp;
@@ -132,7 +166,7 @@ int PlotGraph::plotArea(pqxx::connection & C, std::string symbol, std::string in
                                  "Maybe the users table is empty?");
     }
     *val_min = v_min;
-    /* Create SQL statement */
+    /* Create record number QL statement */
     sql = "SELECT COUNT(*) FROM quotes WHERE symbol = " + \
           symbol + " AND tstamp > " + ini_tstamp + \
           " AND tstamp <= " + end_tstamp;
@@ -152,49 +186,87 @@ int PlotGraph::plotArea(pqxx::connection & C, std::string symbol, std::string in
     return 0;
 }
 
-int PlotGraph::plotMinMaxPrices(pqxx::result &R, KPlotWidget* xyPlot, float &th_min, float &th_max) {
-    int i = 0;
-    int t_ini, t_max, t_th_max;
-    int t_min, t_th_min;
+double PlotGraph::julianTime(std::string tstamp) {
+// tstamp format: YYYY-MM-DD HH:MM:SS
+// Calculates the Truncated Julian Day (TJD) 
+// Name 		Epoch 			Calculation 		Notes
+// Truncated JD 	0h May 24, 1968 	floor (JD − 2440000.5) 	Introduced by NASA in 1979
+    string ts;
+    struct tm  tm;
+    int day, month, year, hour, min, sec;
+    int at, yt, mt;
+    double julTime, hms;
+
+    strptime(tstamp.c_str(), "%Y-%m-%d %H:%M:%S", &tm);
+    day   = tm.tm_mday;
+    month = tm.tm_mon+1;
+    year  = tm.tm_year+1900;
+    hour  = tm.tm_hour;
+    min   = tm.tm_min;
+    sec   = tm.tm_sec;
+    at    = (14 - month) / 12;
+    yt    = year + 4800 - at;
+    mt    = month + 12 * at - 3;
+    julTime = 0;
+    if (year > 1582 || (year == 1582 && month > 10) || (year == 1582 && month == 10 && day >= 15))
+        julTime = day + (153 * mt + 2) / 5 + 365 * yt + yt / 4 - yt / 100 + yt / 400 - 32045;
+    else
+        julTime = day + (153 * mt + 2) / 5 + 365 * yt + yt / 4 - 32083;;
+
+    julTime = julTime - 2440000.5;
+    hms = (sec + 60 * (min +  60 * hour));
+    hms = hms / (24 * 60 * 60);
+    julTime = julTime + hms;
+
+    return julTime;
+
+}
+
+int PlotGraph::plotMinMaxPrices(pqxx::result &R, KPlotWidget* xyPlot, double &jd_min, float &th_min, float &th_max) {
+    double t_ini, time;
+    double t_min, t_th_min;
+    double t_max, t_th_max;
+    
     float first_price, last_price;
     float max_price, threshold_max_price;
     float min_price, threshold_min_price;
-
+    string tstamp;
+    double julTime;
+    
     pqxx::result::const_iterator c_ini = R.begin();
     first_price = c_ini[3].as<float>();
     t_min = 0;
     t_max = 0;
     max_price = first_price;
+
     /* Evaluate buying price */
-//    for(int repeat=0; repeat<100; repeat++) {
     while (true) {
-        i = 1;
         t_ini = t_max;
         first_price = max_price;
         min_price = max_price;
         threshold_min_price = th_min;//0.0018;
         t_th_min = 0;
         for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
-            if (i >= t_ini) {
-
+            tstamp     = c[1].as<string>();
+            julTime = julianTime(tstamp);
+	    time = julTime - jd_min;
+            if (time >= t_ini) {
                 last_price = c[3].as<float>();
                 if (last_price <= min_price) {
-                    t_min = i;
+                    t_min = time;
                     min_price = last_price;
                     threshold_min_price = min_price + th_min;//0.0018;
                 } else {
                     if (last_price >= threshold_min_price) {
-                        t_th_min = i;
+                        t_th_min = time;
                         break;
                     }
                 }
             }
-            i += 1;
         }
         plotLine(xyPlot,Qt::red, true, t_ini,first_price,t_min, min_price);
         if (t_th_min >0) plotLine(xyPlot,Qt::cyan,false,t_min, min_price,t_th_min,threshold_min_price);
 
-        i = 1;
         t_ini = t_min;
         first_price = min_price;
         max_price = 0;
@@ -203,20 +275,22 @@ int PlotGraph::plotMinMaxPrices(pqxx::result &R, KPlotWidget* xyPlot, float &th_
 
         /* Evaluate selling price */
         for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
-            if (i >= t_ini) {
+           tstamp     = c[1].as<string>();
+           julTime = julianTime(tstamp);
+	   time = julTime - jd_min;
+           if (time >= t_ini) {
                 last_price = c[3].as<float>();
                 if (last_price >= max_price) {
-                    t_max = i;
+                    t_max = time;
                     max_price = last_price;
                     threshold_max_price = max_price - th_max;//0.0022;
                 } else {
                     if (last_price <= threshold_max_price) {
-                        t_th_max = i;
+                        t_th_max = time;
                         break;
                     }
                 }
             }
-            i += 1;
         }
         plotLine(xyPlot,Qt::green,true, t_ini,first_price,t_max, max_price);
         if (t_th_max > 0) plotLine(xyPlot,Qt::cyan,false,t_max,max_price,t_th_max,threshold_max_price);
@@ -228,10 +302,12 @@ int PlotGraph::plotMinMaxPrices(pqxx::result &R, KPlotWidget* xyPlot, float &th_
     return 0;
 
 }
-int PlotGraph::plotPrices(pqxx::result &R, KPlotWidget* xyPlot, float &val_min, float &val_max ) {
-    int i = 0;
+
+int PlotGraph::plotPrices(pqxx::result &R, KPlotWidget* xyPlot, double &jd_min, float &val_min, float &val_max ) {
     KPlotObject *xyData;
     string hhmm, mm;
+    double julTime, time;
+
 
     //     string sym;
     string tstamp, old_tstamp;
@@ -247,27 +323,26 @@ int PlotGraph::plotPrices(pqxx::result &R, KPlotWidget* xyPlot, float &val_min, 
     for (pqxx::result::const_iterator d = R.begin(); d != R.end(); ++d) {
 //       sym        = d[0].as<string>();
         tstamp     = d[1].as<string>();
+        /* Convert time stamp to Julian Date */
+        julTime = julianTime(tstamp);
+//	cout << tstamp << " " << julTime << " " << jd_min << " " << julTime - jd_min << endl;
         if (tstamp.substr(11,5)==hhmm) {
-            plotLine(xyPlot, Qt::blue, false, i, val_min, i, val_max);
+	    time = julTime - jd_min;
+            plotLine(xyPlot, Qt::blue, false, time, val_min, time, val_max);
         }
-// 	 if (tstamp.substr(14,5)==mm) {
-//  	    plotLine(xyPlot, Qt::blue, i, val_min, i, val_max);
-//  	 }
-//       tlast      = d[2].as<string>();
+//      tlast      = d[2].as<string>();
         last_trade = d[3].as<float>();
-//       ask        = d[4].as<float>();
-//       bid        = d[5].as<float>();
-//       volume     = d[6].as<int>();
-//       cout << i << " " << sym << " " << tstamp << " " << tlast << " " << last_trade << " " << ask << " " << bid << " " << volume << " " << endl;
-        xyData->addPoint(i,last_trade);
-        i += 1;
+//      ask        = d[4].as<float>();
+//      bid        = d[5].as<float>();
+//      volume     = d[6].as<int>();
+        xyData->addPoint(julTime - jd_min,last_trade);
     }
     xyPlot->addPlotObject(xyData);
     return 0;
 
 }
 
-int PlotGraph::plotLine(KPlotWidget* xyPlot, const QColor &Color, bool val, int &x1,float &y1, int &x2, float &y2) {
+int PlotGraph::plotLine(KPlotWidget* xyPlot, const QColor &Color, bool val, double &x1,float &y1, double &x2, float &y2) {
 
     KPlotObject *xyData;
     string y1_txt;
@@ -289,33 +364,3 @@ int PlotGraph::plotLine(KPlotWidget* xyPlot, const QColor &Color, bool val, int 
     return 0;
 
 }
-
-//Differential Curve
-//int PlotGraph::meanCurve(pqxx::result &R, float &val_min, float &val_max, int &items) {
-//     int n = 10; //Items for mean value
-//     int i, j;
-//     float last_price, mean_price;
-//
-// //    bias_price = val_min + (val_max-val_min)/2;
-//
-//     for (j=n; j<=items; ++j) {
-//         i = 0;
-//         mean_price = 0;
-//         for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
-//             last_price = c[0].as<float>();
-//             if (i>=j-n && i<j) {
-//                 mean_price = (mean_price+last_price)/2;
-//             }
-//             i +=1;
-//         }
-//         cout << j << " " << mean_price << endl;
-// //      xyData_dark_blue->addPoint(j,bias_price+diff_price);
-//         xyData_dark_blue->addPoint(j,mean_price+0.001);
-// //      xyData_dark_blue->addPoint(i,1.128);
-// //      xyData_dark_blue->addPoint(t_max,max_price);
-// //      xyData_dark_blue->addPoint(t_th_max,threshold_max_price);
-//     }
-//     xyPlot->update();
-//     return 0;
-//
-// }
