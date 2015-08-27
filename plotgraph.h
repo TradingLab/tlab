@@ -41,10 +41,13 @@ public:
 
 private:
     int plotArea(pqxx::connection &, std::string, std::string, std::string, double *, double *, float *, float *, int *);
-    double julianTime(std::string); 
     int plotMinMaxPrices(pqxx::result &, KPlotWidget*,double &, float &, float &);
+    int plotPutText(KPlotWidget*, string &, string &, string &, int &, int &, float &, float &);
     int plotPrices(pqxx::result &, KPlotWidget*,double &,float &,float &);
     int plotLine(KPlotWidget*, const QColor &, bool, double &,float &,double &, float &);
+    int plotTimeRange(double &, std::string *, std::string *);
+    double julianTime(std::string); 
+    std::string GregorianTime(double jd);
 protected:
 //    BallLogic *logic;
     KPlotWidget *xyPlot;
