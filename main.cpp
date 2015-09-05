@@ -139,6 +139,7 @@ int main (int argc, char *argv[])
     con.append(" port=");
     con.append(port);
 
+
 //     int today, newYear;
 //     today   = Julian.calc_julianToday();
 //     newYear = Julian.calc_juliandate(2015, 1, 1);
@@ -166,12 +167,20 @@ int main (int argc, char *argv[])
 
         KApplication app;
         PlotWindow* mainWindow = new PlotWindow(C);
+//        while(true) {
         mainWindow->show();
+//            return app.exec();
+//            pqxx::internal::sleep_seconds(1);
+//        }
         C.disconnect ();
         cout << "Closed database successfully: " << C.dbname() << endl;
         return app.exec();
 
-//     QTimer *timer = new QTimer(this);
+        pqxx::internal::sleep_seconds(4);
+
+
+
+        //     QTimer *timer = new QTimer(this);
 //     connect(timer, SIGNAL(timeout()),
 //             logic, SLOT( nextTimeStep() ) );
 //     connect(timer, SIGNAL(timeout()),
