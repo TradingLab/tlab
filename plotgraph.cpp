@@ -16,6 +16,7 @@
  */
 
 #include "plotgraph.h"
+
 #include<QPainter>
 #include <string>
 
@@ -25,6 +26,7 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     float th_buy, th_sell;
     int numBuy, numSell;
     int num_items;
+    bool scanner = false;
 
     /* A week trading period */
 //  EURUSD=X - US Dollar
@@ -38,26 +40,33 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
 //  EURSGD=X - Singapore Dollar
 //  EURNOK=X - Norwegian Krone
 
-    symbol = "'EURAUD=X'";
-    double timeRangeLen = 3; //days with decimals
+    symbol = "'EURUSD=X'";
+    double timeRangeLen = 2; //days with decimals
     int numBuySell = 20;
+    
     /* Time range calculation */
-//  ini_tstamp = "'2015-08-16 21:00:00'"; //Week 34
-//  end_tstamp = "'2015-08-21 21:00:00'";
-//  ini_tstamp = "'2015-08-23 21:00:00'"; //Week 35
-//  end_tstamp = "'2015-08-28 21:00:00'";
-
-
-    plotScanner(timeRangeLen);
-    plotTimeRange(timeRangeLen);
-
+    if (scanner) {
+//        ini_tstamp = "'2015-08-30 21:00:00'"; //Week 36
+//        end_tstamp = "'2015-09-04 21:00:00'";
+   ini_tstamp = "'2015-09-06 21:00:00'"; //Week 37
+   end_tstamp = "'2015-09-11 21:00:00'";
+//    ini_tstamp = "'2015-09-13 21:00:00'"; //Week 38
+//    end_tstamp = "'2015-09-18 21:00:00'";
+//    ini_tstamp = "'2015-09-20 21:00:00'"; //Week 39
+//    end_tstamp = "'2015-09-25 21:00:00'";
+//    ini_tstamp = "'2015-09-27 21:00:00'"; //Week 40
+//    end_tstamp = "'2015-10-02 21:00:00'";
+    } else {
+        plotTimeRange(timeRangeLen);
+    }
     cout << "Symbol: " << symbol << endl;
     cout << "Quotes period: " << ini_tstamp << " to " << end_tstamp << endl;
 
     /* Create SQL statement */
     sql = "SELECT * FROM quotes WHERE symbol = " + \
           symbol + " AND tstamp >=" + ini_tstamp +\
-          "AND  tstamp <=" + end_tstamp;
+          "AND  tstamp <=" + end_tstamp +\
+          " ORDER BY tstamp";
 
     /* Create a non-transactional object. */
     pqxx::nontransaction N(C);
@@ -65,17 +74,23 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
     /* Execute SQL query */
     pqxx::result R( N.exec( sql ));
 
+    if (scanner) {
+//        plotScanner(timeRangeLen);
+    }
+
     plotArea(R, &num_items);
     cout.precision(10);
+    
     cout << "Period in Julian time: " << jd_ini << " to " << jd_end << endl;
+    cout <<  "Num. items: " << num_items << endl;
     cout << "Min/max time in Julian time: " << jd_min << "/" << jd_max << endl;
-    std::cout << "Quote Value from " << val_min << " to " << val_max << " num. items " << num_items << std::endl;
+    std::cout << "Quote Value from " << val_min << " to " << val_max << std::endl;
 
     setBackgroundRole(QPalette::Base);					//Background color: this nice gradient of gray
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);	//allow for expanding of the widget, aka use the minimumSizeHint and sizeHint
 
     symbolVal = "Value " + symbol;
-    // For xy plot using KplotWidget
+// For xy plot using KplotWidget
     this->xyPlot = xyPlot;						//set pointer
     xyPlot->setMinimumSize( 600, 600 );					//set minimum size in pixel
     xyPlot->setLimits(0, jd_end - jd_ini, val_min, val_max);			//
@@ -103,11 +118,11 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
 }
 
 /* p l o t S c a n n e r */
-int PlotGraph::plotScanner(double &range_len) {
-    
-    
-    return 0;
-}
+// int PlotGraph::plotScanner(double &range_len) {
+// 
+// 
+//     return 0;
+// }
 
 
 /* p l o t P u t T e x t B o a r d */
@@ -342,7 +357,7 @@ int PlotGraph::plotArea(pqxx::result &R, int *num_items) {
     string tstamp_ini, tstamp_end;
     string tstamp_min, tstamp_max;
     float vmin = 0, vmax = 0, val;
-    double julTime;
+//    double julTime;
     int n_items = 0;
 
     /* First price in selected data */
@@ -352,6 +367,7 @@ int PlotGraph::plotArea(pqxx::result &R, int *num_items) {
 
     /* Last price in selected data */
     for (pqxx::result::const_iterator c = R.begin(); c != R.end(); ++c) {
+//        cout << c[1].as<string>() << endl;
         val = c[3].as<float>();
         tstamp_end = c[1].as<string>();
         if (val < vmin) {
@@ -362,24 +378,17 @@ int PlotGraph::plotArea(pqxx::result &R, int *num_items) {
             tstamp_max = c[1].as<string>();
             vmax = val;
         }
-        n_items = +1;
+        n_items += 1;
     }
 
     ts_ini = tstamp_ini;
     ts_end = tstamp_end;
 
     /* Convert time stamp to Julian Date */
-    julTime = julianTime(tstamp_ini);
-    jd_ini = julTime;
-
-    julTime = julianTime(tstamp_end);
-    jd_end = julTime;
-
-    julTime = julianTime(tstamp_min);
-    jd_min = julTime;
-
-    julTime = julianTime(tstamp_max);
-    jd_max = julTime;
+    jd_ini = julianTime(tstamp_ini);
+    jd_end  = julianTime(tstamp_end);
+    jd_min = julianTime(tstamp_min);
+    jd_max = julianTime(tstamp_max);
 
     val_min = vmin;
     val_max = vmax;
@@ -480,15 +489,13 @@ string PlotGraph::GregorianTime(double jd) {
 /* p l o t P u t T e x t */
 int PlotGraph::plotPutText(KPlotWidget* xyPlot, string & text, int &posx, int &posy, float &val_min, float &val_max) {
     KPlotObject *xyData;
-    string ts;
     double ini_jd, end_jd, jd;
     double x;//>
     float y; //^
 
-    ts = ts_ini.substr(1,19);
-    ini_jd = julianTime(ts);
-    ts = ts_end.substr(1,19);
-    end_jd = julianTime(ts);
+    ini_jd = julianTime(ts_ini);
+    end_jd = julianTime(ts_end);
+
     jd = end_jd - ini_jd;
     x  = posx * jd/40;
 
@@ -496,7 +503,6 @@ int PlotGraph::plotPutText(KPlotWidget* xyPlot, string & text, int &posx, int &p
     xyData  = new KPlotObject( Qt::black, KPlotObject::Points, 0);
     xyData->addPoint(x,y, text.c_str());
 
-//     plotLine(xyPlot, Qt::red, false, x, val_min, x, val_max);
     xyPlot->addPlotObject(xyData);
 
     return 0;
@@ -509,14 +515,8 @@ int PlotGraph::plotPrices(pqxx::result &R, KPlotWidget* xyPlot) {
     string hhmm;
     double x;
     float y;
-
-    //     string sym;
     string tstamp, old_tstamp;
-//     string tlast;
     float  last_trade;
-//     float  ask;
-//     float  bid;
-//     int    volume;
 
     xyData  = new KPlotObject( Qt::blue, KPlotObject::Lines, 1);
     hhmm = "00:00";

@@ -48,7 +48,7 @@ private:
     int plotPrices(pqxx::result &R, KPlotWidget* xyPlot);
     int plotLine(KPlotWidget* xyPlot, const QColor &Color, bool val, double &x1,float &y1, double &x2, float &y2);
     int plotTimeRange(double &range_len);
-    int plotScanner(double &range_len);
+//    int plotScanner(double &range_len);
     double julianTime(std::string tstamp); 
     std::string GregorianTime(double jd);
 protected:
