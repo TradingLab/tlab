@@ -7,13 +7,13 @@ Trading charts and algorithms test, see GitHub  Wiki reference.
 * Program directory; HOME/TradingLab/tlab
 * PostgreSQL lib: libpqxx
 
-Chart01: Ideal sell and buy sequence for a period 
+**Chart01:** Ideal sell and buy sequence for a period 
 
-Chart02: Pattern recognition, Elliott Wave Principle
+**Chart02:** Pattern recognition, Elliott Wave Principle
 
-Chart03: Technical Analysis, Dynamic Trading
+**Chart03:** Technical Analysis, Dynamic Trading
 
-Chart04: Risks evaluation and decision management
+**Chart04:** Risks evaluation and decision management
 
 # References
 To download symbols NASDAQ/NYSE
