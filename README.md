@@ -8,17 +8,9 @@ Trading charts and algorithms test, see GitHub  Wiki reference.
 * PostgreSQL lib: libpqxx
 
 # References
-NASDAQ Symbols download
+To download symbols NASDAQ/NYSE
 
-* http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=nasdaq&render=download
-
-NYSE Symbols download
-
-* http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=nyse&render=download
-
-ALL Symbols download
-
-* http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=all&render=download
+http://stackoverflow.com/questions/5246843/how-to-get-a-complete-list-of-ticker-symbols-from-yahoo-finance
 
 Gummy stuff
 

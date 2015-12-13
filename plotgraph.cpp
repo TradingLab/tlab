@@ -41,8 +41,8 @@ PlotGraph::PlotGraph(pqxx::connection &C, KPlotWidget* xyPlot, QWidget* parent):
 //  EURNOK=X - Norwegian Krone
 
     symbol = "'EURUSD=X'";
-    double timeRangeLen = 2; //days with decimals
-    int numBuySell = 20;
+    double timeRangeLen = 5; //days with decimals
+    int numBuySell = 40;
     
     /* Time range calculation */
     if (scanner) {
