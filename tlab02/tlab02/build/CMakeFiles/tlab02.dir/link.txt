@@ -1,1 +1,0 @@
-/usr/bin/c++   -g    CMakeFiles/tlab02.dir/main.o  -o tlab02 -rdynamic 
